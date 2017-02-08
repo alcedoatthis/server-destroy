@@ -12,8 +12,20 @@ function enableDestroy(server) {
   });
 
   server.destroy = function(cb) {
-    server.close(cb);
+    var maybePromise;
+
+    if(!cb) {
+      maybePromise = new Promise(function(resolve, reject) {
+        server.close(function(err) {
+          err instanceof Error ? reject(err) : resolve();
+        });
+      })
+    } else {
+      server.close(cb);
+    }
     for (var key in connections)
       connections[key].destroy();
+    
+    return maybePromise;
   };
 }
