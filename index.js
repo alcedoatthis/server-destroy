@@ -28,4 +28,5 @@ function enableDestroy(server) {
     
     return maybePromise;
   };
+  return server;
 }
